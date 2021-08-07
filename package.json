@@ -46,6 +46,8 @@
     "pretest": "yarn compile",
     "test": "mocha",
     "test-erc20": "mocha -g ERC20Token",
+    "test-meme": "mocha -g MEME", 
+    "test-bytes": "mocha -g BytesStorage", 
     "test-integration": "mocha --file test/ERC20Token.spec.ts",
     "prepublishOnly": "yarn test",
     "deploy": "hardhat run scripts/deploy.js --network ropsten"

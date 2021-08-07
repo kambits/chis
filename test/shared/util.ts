@@ -8,3 +8,9 @@ export function ether(n: string | number): BigNumber {
 export function toEther(n: BigNumberish): string {
     return utils.formatEther(n)
 }
+
+export function parseUnits(value: string | number, unitName?: BigNumberish): BigNumber {
+    return utils.parseUnits(value.toString(), unitName)
+}
+
+export default utils
