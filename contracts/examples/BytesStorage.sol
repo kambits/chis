@@ -9,7 +9,7 @@ contract BytesStorage {
 
     PixelData[] private pixeldb;
     mapping(bytes32 => PixelData) pixelmap;
-    event NewPixelArt(uint256, bytes32);
+    event NewPixelArt(uint256 index, bytes32 h);
 
     function hash(bytes calldata data) external pure returns (bytes32) {
         return sha256(data);

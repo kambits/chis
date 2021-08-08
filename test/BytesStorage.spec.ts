@@ -1,7 +1,7 @@
 import chai, { expect } from 'chai'
 import { BigNumber, Contract, utils } from 'ethers'
 import { solidity, MockProvider, deployContract } from 'ethereum-waffle'
-
+import fs from 'fs'
 import BytesStorage from '../build/BytesStorage.json'
 
 chai.use(solidity)
@@ -37,25 +37,33 @@ describe('BytesStorage', () => {
             .withArgs(0, h)
         
         expect (await contract.hashCheck(h)).eq(true)
-
-        const [data, p] = await contract.query(0)
-        expect(data).to.eq('0x01')
-        expect(p).to.eq(BigNumber.from(h))
     })
 
-
     it('Store long bytes', async () => {
-        const h = utils.sha256("0xf00dfeed383Fa3B60f9B4AB7fBf6835d3c26C3765cD2B2e2f00dfeed")
-        await expect(contract.connect(walletAlice).store("0xf00dfeed383Fa3B60f9B4AB7fBf6835d3c26C3765cD2B2e2f00dfeed")) 
+        const hexInput = '0xf00dfeed383Fa3B60f9B4AB7fBf6835d3c26C3765cD2B2e2f00dfeed'
+        const h = utils.sha256(hexInput)
+        await expect(contract.connect(walletAlice).store(hexInput)) 
             .to.emit(contract, 'NewPixelArt')
             .withArgs(0, h)
         
         const [data, p] = await contract.query(0)
-        expect(data).to.eq('0xf00dfeed383Fa3B60f9B4AB7fBf6835d3c26C3765cD2B2e2f00dfeed'.toLowerCase())
+        expect(data).to.eq(hexInput.toLowerCase())
         expect(p).to.eq(BigNumber.from(h))
-
-        
     })
 
+    it('Store image', async () => {
+        const buf = fs.readFileSync('./test/png/pixel.png')
+        const hexInput = `0x${buf.toString('hex')}`
+        console.info(hexInput); 
+        const h = utils.sha256(hexInput)
+        await expect(contract.connect(walletAlice).store(hexInput)) 
+            .to.emit(contract, 'NewPixelArt')
+            .withArgs(0, h)
+        
+        const [data, p] = await contract.query(0)
+        expect(data).to.eq(hexInput.toLowerCase())
+        expect(p).to.eq(BigNumber.from(h))
+        
+    })
 
 })
