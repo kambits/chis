@@ -48,9 +48,11 @@
     "test-erc20": "mocha -g ERC20Token",
     "test-meme": "mocha -g MEME", 
     "test-bytes": "mocha -g BytesStorage", 
+    "test-membership": "mocha -g Membership", 
     "test-integration": "mocha --file test/ERC20Token.spec.ts",
     "prepublishOnly": "yarn test",
-    "deploy": "hardhat run scripts/deploy.js --network ropsten"
+    "deploy-bsctest": "hardhat run scripts/deploy.js --network bsctest",
+    "deploy-ropsten": "hardhat run scripts/deploy.js --network ropsten"
   },
   "license": "GPL-3.0-or-later"
 }

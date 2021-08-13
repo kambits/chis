@@ -22,11 +22,11 @@ contract BytesStorage {
     }
 
     function query(uint256 index) external view returns (bytes memory, bytes32) {
-        PixelData memory p =  pixeldb[index];
+        PixelData memory p = pixeldb[index];
         return (p.data, p.h);
     }
 
     function hashCheck(bytes32 h) external view returns (bool) {
-        return pixelmap[h].h.length > 0; 
+        return pixelmap[h].h.length > 0;
     }
 }

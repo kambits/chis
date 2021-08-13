@@ -29,6 +29,10 @@ module.exports = {
     ropsten: {
       url: `https://eth-ropsten.alchemyapi.io/v2/SxR_h_dE4t13Tw_mieLOZz4PfJ2-xyll`,
       accounts: [`0x${process.env.ROPSTEN_PRIVATE_KEY}`]
+    },
+    bsctest: {
+      url: `https://data-seed-prebsc-1-s1.binance.org:8545`,
+      accounts: [`0x${process.env.ROPSTEN_PRIVATE_KEY}`]
     }
   },
   paths: {
