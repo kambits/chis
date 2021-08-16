@@ -50,6 +50,7 @@
     "test-bytes": "mocha -g BytesStorage", 
     "test-membership": "mocha -g Membership", 
     "test-integration": "mocha --file test/ERC20Token.spec.ts",
+    "test-ethers": "mocha -g Ethers", 
     "prepublishOnly": "yarn test",
     "deploy-bsctest": "hardhat run scripts/deploy.js --network bsctest",
     "deploy-ropsten": "hardhat run scripts/deploy.js --network ropsten"
