@@ -30,7 +30,7 @@ contract Membership is Ownable {
         referralRate = _referralRate;
     }
 
-    function premium(
+    function registerVIP(
         address user,
         uint256 memberType,
         address referral

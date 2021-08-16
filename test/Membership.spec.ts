@@ -1,5 +1,5 @@
 import chai, { expect } from 'chai'
-import { Contract } from 'ethers'
+import { BigNumber, Contract } from 'ethers'
 import { solidity, MockProvider, deployContract } from 'ethereum-waffle'
 import { ether, toEther, parseUnits } from './shared/util'
 
@@ -23,7 +23,7 @@ describe('Membership', () => {
     let contract: Contract
 
 
-    beforeEach(async () => {
+    beforeEach(async () => { 
         contract = await deployContract(walletDeployer, Membership, [], overrides)
     })
 
@@ -41,8 +41,8 @@ describe('Membership', () => {
         expect(await contract.memberFeeMap(2)).to.eq(ether(30))
     })
 
-    it('Premium VIP1', async () => {
-        await contract.connect(walletAlice).premium(walletAlice.address, 0, walletBob.address, {
+    it('registerVIP VIP1', async () => {
+        await contract.connect(walletAlice).registerVIP(walletAlice.address, 0, walletBob.address, {
             gasLimit: 9999999,
             gasPrice: 0,
             value: ether(1)
@@ -53,8 +53,8 @@ describe('Membership', () => {
         console.info("bob balance: ",  toEther(await walletBob.getBalance()))
     })
 
-    it('Premium VIP7', async () => {
-        await contract.connect(walletAlice).premium(walletAlice.address, 1, walletBob.address, {
+    it('registerVIP VIP7', async () => {
+        await contract.connect(walletAlice).registerVIP(walletAlice.address, 1, walletBob.address, {
             gasLimit: 9999999,
             gasPrice: 0,
             value: ether(5)
@@ -65,8 +65,8 @@ describe('Membership', () => {
         console.info("bob balance: ",  toEther(await walletBob.getBalance()))
     })
 
-    it('Premium VIPX', async () => {
-        await contract.connect(walletAlice).premium(walletAlice.address, 2, walletBob.address, {
+    it('registerVIP VIPX', async () => {
+        await contract.connect(walletAlice).registerVIP(walletAlice.address, 2, walletBob.address, {
             gasLimit: 9999999,
             gasPrice: 0,
             value: ether(30)
@@ -78,7 +78,7 @@ describe('Membership', () => {
     })
 
     it('Insufficient member fee (VIP1)', async () => {
-        await expect(contract.connect(walletAlice).premium(walletAlice.address, 0, walletBob.address, {
+        await expect(contract.connect(walletAlice).registerVIP(walletAlice.address, 0, walletBob.address, {
             gasLimit: 9999999,
             gasPrice: 0,
             value: ether(1).sub(1)
@@ -86,7 +86,7 @@ describe('Membership', () => {
     })
 
     it('Insufficient member fee (VIP7)', async () => {
-        await expect(contract.connect(walletAlice).premium(walletAlice.address, 1, walletBob.address, {
+        await expect(contract.connect(walletAlice).registerVIP(walletAlice.address, 1, walletBob.address, {
             gasLimit: 9999999,
             gasPrice: 0,
             value: ether(5).sub(1)
@@ -94,7 +94,7 @@ describe('Membership', () => {
     })
 
     it('Insufficient member fee (VIPX)', async () => {
-        await expect(contract.connect(walletAlice).premium(walletAlice.address, 2, walletBob.address, {
+        await expect(contract.connect(walletAlice).registerVIP(walletAlice.address, 2, walletBob.address, {
             gasLimit: 9999999,
             gasPrice: 0,
             value: ether(30).sub(1)
