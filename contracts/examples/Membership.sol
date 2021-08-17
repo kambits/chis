@@ -34,7 +34,7 @@ contract Membership is Ownable {
         address user,
         uint256 memberType,
         address referral
-    ) payable public {
+    ) public payable {
         require(memberType < 3, 'Invalid member type');
         require(msg.value >= memberFeeMap[MemberType(memberType)], 'Insufficient member fee');
 
@@ -42,15 +42,15 @@ contract Membership is Ownable {
             memberTimeMap[user] = block.timestamp;
         }
 
-        if (memberType == uint(MemberType.VIP1)) {
+        if (memberType == uint256(MemberType.VIP1)) {
             memberTimeMap[user] += 1 days;
-        } else if (memberType == uint(MemberType.VIP7)) {
+        } else if (memberType == uint256(MemberType.VIP7)) {
             memberTimeMap[user] += 1 weeks;
         } else {
             memberTimeMap[user] += 10000 * 365 days;
         }
 
-        memberTypeMap[user] = MemberType(memberType) ;
+        memberTypeMap[user] = MemberType(memberType);
 
         uint256 fee = msg.value;
         if (referral != address(0x0) && referral != owner() && referral != user) {
@@ -65,6 +65,10 @@ contract Membership is Ownable {
 
     function isMember(address user) external view returns (bool) {
         return memberTimeMap[user] > now;
+    }
+
+    function getVIPInfo(address user) external view returns (uint256, uint256) {
+        return (memberTimeMap[user], now);
     }
 
     function setMemberFees(

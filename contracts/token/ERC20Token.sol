@@ -12,7 +12,8 @@ import '../utils/AdminRole.sol';
  * `ERC20` functions.
  */
 contract ERC20Token is ERC20, AdminRole {
-    uint256 private constant INITIAL_SUPPLY = 10 ** 18 * (10**18);
+    uint256 private constant INITIAL_SUPPLY = 10**18 * (10**18);
+
     constructor() public ERC20('Chis Finance', 'CHIS') {
         _mint(msg.sender, INITIAL_SUPPLY);
     }

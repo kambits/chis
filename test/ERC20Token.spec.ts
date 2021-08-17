@@ -59,12 +59,8 @@ describe('ERC20Token', () => {
     })
 
     it('Calls totalSupply on Token contract', async () => {
-        await token.totalSupply()
-        expect('totalSupply').to.be.calledOnContract(token)
+        const totalSupply = await token.totalSupply()
+        expect(totalSupply).to.be.equal(ether(1).mul(ether(1)))
     })
 
-    it('Calls balanceOf with sender address on Token contract', async () => {
-        await token.balanceOf(walletAlice.address)
-        expect('balanceOf').to.be.calledOnContractWith(token, [walletAlice.address])
-    })
 })

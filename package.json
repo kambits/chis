@@ -16,7 +16,7 @@
   ],
   "dependencies": {
     "@openzeppelin/contracts": "3.1.0",
-    "@uniswap/lib": "1.1.1"
+    "dotenv": "^10.0.0"
   },
   "devDependencies": {
     "@nomiclabs/hardhat-ethers": "^2.0.2",
@@ -26,7 +26,7 @@
     "chai": "^4.2.0",
     "ethereum-waffle": "^3.1.1",
     "ethereumjs-util": "^6.2.0",
-    "hardhat": "^2.3.0",
+    "hardhat": "^2.6.0",
     "mocha": "^6.2.2",
     "ncp": "^2.0.0",
     "prettier": "^1.19.1",
@@ -44,13 +44,17 @@
     "compile": "waffle",
     "postcompile": "# compiled",
     "pretest": "yarn compile",
+    "hardhat:node": "hardhat node --hostname 0.0.0.0",
+    "hardhat:dev": "hardhat --network localhost",
+    "hardhat:prod": "hardhat --network xdai",
+    "hardhat:mainnet": "hardhat --network mainnet",
     "test": "mocha",
     "test-erc20": "mocha -g ERC20Token",
-    "test-meme": "mocha -g MEME", 
-    "test-bytes": "mocha -g BytesStorage", 
-    "test-membership": "mocha -g Membership", 
+    "test-meme": "mocha -g MEME",
+    "test-bytes": "mocha -g BytesStorage",
+    "test-membership": "mocha -g Membership",
     "test-integration": "mocha --file test/ERC20Token.spec.ts",
-    "test-ethers": "mocha -g Ethers", 
+    "test-ethers": "mocha -g Ethers",
     "prepublishOnly": "yarn test",
     "deploy-bsctest": "hardhat run scripts/deploy.js --network bsctest",
     "deploy-ropsten": "hardhat run scripts/deploy.js --network ropsten"
