@@ -18,7 +18,7 @@ contract Membership is Ownable {
     /* member type => member fee */
     mapping(MemberType => uint256) public memberFeeMap;
 
-    uint256 public referralRate = 5; // 5%
+    uint256 public referralRate = 35; // 35%
     uint256 public totalMember = 0;
 
     constructor() public {
@@ -35,7 +35,6 @@ contract Membership is Ownable {
         uint256 memberType,
         address referral
     ) public payable {
-        require(memberType < 3, 'Invalid member type');
         require(msg.value >= memberFeeMap[MemberType(memberType)], 'Insufficient member fee');
 
         _addMember(user, memberType);
@@ -56,6 +55,10 @@ contract Membership is Ownable {
 
     function getVIPInfo(address user) external view returns (uint256, uint256) {
         return (memberTimeMap[user], now);
+    }
+
+    function getVIPFee() external view returns (uint256, uint256, uint256) {
+        return (memberFeeMap[0], memberFeeMap[1], memberFeeMap[2]);
     }
 
     function setMemberFees(

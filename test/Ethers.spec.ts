@@ -24,4 +24,13 @@ describe('Ethers', () => {
         // console.info(funcHash)
         expect(funcHash.indexOf('0xe83c4148')).to.eq(0)
     })
+
+    it('func getVIPFee', async () => {
+        const abi = ['function getVIPFee() external view returns (uint256, uint256, uint256)']
+        const iface = new utils.Interface(abi)
+        const funcHash = iface.encodeFunctionData('getVIPFee')
+
+        console.info(funcHash)
+        expect(funcHash.indexOf('0x14f6458a')).to.eq(0)
+    })
 })
