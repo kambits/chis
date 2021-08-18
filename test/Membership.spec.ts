@@ -57,8 +57,8 @@ describe('Membership', () => {
 
         // after 1 hour
         // await time.increase(3600)
-        await network.provider.send('evm_increaseTime', [24 * 3600])
-        await network.provider.send('evm_mine')
+        // await network.provider.send('evm_increaseTime', [24 * 3600])
+        // await network.provider.send('evm_mine')
 
         await contract.connect(walletBob).registerVIP(walletBob.address, 0, walletAlice.address, {
             gasLimit: 9999999,

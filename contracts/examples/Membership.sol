@@ -38,19 +38,7 @@ contract Membership is Ownable {
         require(memberType < 3, 'Invalid member type');
         require(msg.value >= memberFeeMap[MemberType(memberType)], 'Insufficient member fee');
 
-        if (memberTimeMap[user] == 0) {
-            memberTimeMap[user] = block.timestamp;
-        }
-
-        if (memberType == uint256(MemberType.VIP1)) {
-            memberTimeMap[user] += 1 days;
-        } else if (memberType == uint256(MemberType.VIP7)) {
-            memberTimeMap[user] += 1 weeks;
-        } else {
-            memberTimeMap[user] += 10000 * 365 days;
-        }
-
-        memberTypeMap[user] = MemberType(memberType);
+        _addMember(user, memberType);
 
         uint256 fee = msg.value;
         if (referral != address(0x0) && referral != owner() && referral != user) {
@@ -60,7 +48,6 @@ contract Membership is Ownable {
         }
 
         payable(owner()).transfer(fee);
-        totalMember += 1;
     }
 
     function isMember(address user) external view returns (bool) {
@@ -79,5 +66,28 @@ contract Membership is Ownable {
         memberFeeMap[MemberType.VIP1] = fee1;
         memberFeeMap[MemberType.VIP7] = fee7;
         memberFeeMap[MemberType.VIPX] = feeX;
+    }
+
+    function addMember(address user, uint256 memberType) public onlyOwner {
+        _addMember(user, memberType);
+    }
+
+    function _addMember(address user, uint256 memberType) private {
+        require(memberType < 3, 'Invalid member type');
+
+        if (memberTimeMap[user] == 0) {
+            memberTimeMap[user] = block.timestamp;
+        }
+
+        if (memberType == uint256(MemberType.VIP1)) {
+            memberTimeMap[user] += 1 days;
+        } else if (memberType == uint256(MemberType.VIP7)) {
+            memberTimeMap[user] += 1 weeks;
+        } else {
+            memberTimeMap[user] += 10000 * 365 days;
+        }
+
+        memberTypeMap[user] = MemberType(memberType);
+        totalMember += 1;
     }
 }

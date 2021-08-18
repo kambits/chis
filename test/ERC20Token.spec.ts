@@ -62,5 +62,4 @@ describe('ERC20Token', () => {
         const totalSupply = await token.totalSupply()
         expect(totalSupply).to.be.equal(ether(1).mul(ether(1)))
     })
-
 })

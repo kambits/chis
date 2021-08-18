@@ -25,7 +25,6 @@ describe('MEME', () => {
     const TOKEN_DECIMALS = 6
     const toAmount = (value: string | number) => parseUnits(value, TOKEN_DECIMALS)
 
-
     beforeEach(async () => {
         token = await deployContract(walletDeployer, ERC20Token, [], overrides)
         expect(await token.balanceOf(walletDeployer.address)).to.eq(toAmount(100000000))
@@ -33,7 +32,11 @@ describe('MEME', () => {
     })
 
     it('Check token balance', async () => {
-        expect(await token.balanceOf(walletAlice.address)).to.eq(toAmount(1000).mul(90).div(100))
+        expect(await token.balanceOf(walletAlice.address)).to.eq(
+            toAmount(1000)
+                .mul(90)
+                .div(100)
+        )
     })
 
     it('Check token symbol', async () => {
@@ -46,7 +49,11 @@ describe('MEME', () => {
 
     it('Transfer adds amount to destination account', async () => {
         await token.connect(walletAlice).transfer(walletBob.address, toAmount(10))
-        expect(await token.balanceOf(walletBob.address)).to.eq(toAmount(10).mul(90).div(100))
+        expect(await token.balanceOf(walletBob.address)).to.eq(
+            toAmount(10)
+                .mul(90)
+                .div(100)
+        )
     })
 
     it('Transfer emits event', async () => {
@@ -68,5 +75,4 @@ describe('MEME', () => {
         const totalSupply = await token.totalSupply()
         expect(totalSupply).to.be.equal(toAmount(99999900))
     })
-
 })

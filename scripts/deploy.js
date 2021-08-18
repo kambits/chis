@@ -1,28 +1,71 @@
-// We require the Hardhat Runtime Environment explicitly here. This is optional 
-// but useful for running the script in a standalone fashion through `node <script>`.
-//
-// When running the script with `hardhat run <script>` you'll find the Hardhat
-// Runtime Environment's members available in the global scohouseExchange.
-const hre = require("hardhat");
+/* eslint no-use-before-define: "warn" */
+const fs = require('fs')
+const chalk = require('chalk')
+const { config, ethers } = require('hardhat')
+const { utils } = require('ethers')
+const R = require('ramda')
 
-async function main() {
-    // Hardhat always runs the compile task when running scripts with its command
-    // line interface.
-    //
-    // If this script is run directly using `node` you may want to call compile 
-    // manually to make sure everything is compiled
-    // await hre.run('compile');
+const main = async () => {
+    console.log('\n\n 📡 Deploying...\n')
 
-    const BytesStorage = await hre.ethers.getContractFactory("BytesStorage");
-    const bytesStorage = await BytesStorage.deploy();
+    await deploy('Membership') 
 
-    console.info(`BytesStorage: ${bytesStorage.address}`);
-    console.info('It is ready!')
+    // const exampleToken = await deploy("ExampleToken")
+    // const examplePriceOracle = await deploy("ExamplePriceOracle")
+    // const smartContractWallet = await deploy("SmartContractWallet",[exampleToken.address,examplePriceOracle.address])
+
+    console.log(' 💾  Artifacts (address, abi, and args) saved to: ', chalk.blue('packages/hardhat/artifacts/'), '\n\n')
+}
+
+const deploy = async (contractName, _args) => {
+    console.log(` 🛰  Deploying: ${contractName}`)
+
+    const contractArgs = _args || []
+    const contractArtifacts = await ethers.getContractFactory(contractName)
+    const deployed = await contractArtifacts.deploy(...contractArgs)
+    const encoded = abiEncodeArgs(deployed, contractArgs)
+    fs.writeFileSync(`artifacts/${contractName}.address`, deployed.address)
+
+    console.log(' 📄', chalk.cyan(contractName), 'deployed to:', chalk.magenta(deployed.address))
+
+    if (!encoded || encoded.length <= 2) return deployed
+    fs.writeFileSync(`artifacts/${contractName}.args`, encoded.slice(2))
+
+    return deployed
+}
+
+// ------ utils -------
+
+// abi encodes contract arguments
+// useful when you want to manually verify the contracts
+// for example, on Etherscan
+const abiEncodeArgs = (deployed, contractArgs) => {
+    // not writing abi encoded args if this does not pass
+    if (!contractArgs || !deployed || !R.hasPath(['interface', 'deploy'], deployed)) {
+        return ''
+    }
+    const encoded = utils.defaultAbiCoder.encode(deployed.interface.deploy.inputs, contractArgs)
+    return encoded
+}
+
+// checks if it is a Solidity file
+const isSolidity = fileName => fileName.indexOf('.sol') >= 0 && fileName.indexOf('.swp') < 0
+
+const readArgsFile = contractName => {
+    let args = []
+    try {
+        const argsFile = `./contracts/${contractName}.args`
+        if (!fs.existsSync(argsFile)) return args
+        args = JSON.parse(fs.readFileSync(argsFile))
+    } catch (e) {
+        console.log(e)
+    }
+    return args
 }
 
 main()
     .then(() => process.exit(0))
     .catch(error => {
-        console.error(error);
-        process.exit(1);
-    });
+        console.error(error)
+        process.exit(1)
+    })
