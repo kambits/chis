@@ -19,15 +19,14 @@ contract Membership is Ownable {
     mapping(MemberType => uint256) public memberFeeMap;
 
     uint256 public referralRate = 35; // 35%
+    uint256 public discount = 5 ether; // -5 ether
     uint256 public totalMember = 0;
 
-    constructor() public {
-        setMemberFees(1 ether, 5 ether, 30 ether);
-    }
+    event Member(uint256 indexed index, address user, uint8 memberType);
 
-    function updateReferralRate(uint256 _referralRate) external onlyOwner {
-        require(_referralRate <= 100, 'Invaild referral rate');
-        referralRate = _referralRate;
+    constructor() public {
+        setMemberFees(1 ether, 5 ether, 35 ether);
+        _grantMember(msg.sender, uint256(MemberType.VIPX));
     }
 
     function registerVIP(
@@ -35,13 +34,20 @@ contract Membership is Ownable {
         uint256 memberType,
         address referral
     ) public payable {
-        require(msg.value >= memberFeeMap[MemberType(memberType)], 'Insufficient member fee');
+        uint256 memberFee = memberFeeMap[MemberType(memberType)];
+        if (MemberType(memberType) == MemberType.VIPX && memberTypeMap[referral] == MemberType.VIPX) {
+            if (memberFee > discount) {
+                memberFee = memberFee.sub(discount);
+            }
+        }
 
-        _addMember(user, memberType);
+        require(msg.value >= memberFee, 'Insufficient member fee');
+
+        _grantMember(user, memberType);
 
         uint256 fee = msg.value;
-        if (referral != address(0x0) && referral != owner() && referral != user) {
-            uint256 referralFee = fee.mul(referralRate) / 100;
+        if (referral != address(0x0) && referral != owner() && referral != user && memberTimeMap[referral] > 0) {
+            uint256 referralFee = memberFee.mul(referralRate) / 100;
             payable(referral).transfer(referralFee);
             fee = fee.sub(referralFee);
         }
@@ -57,25 +63,42 @@ contract Membership is Ownable {
         return (memberTimeMap[user], now);
     }
 
-    function getVIPFee() external view returns (uint256, uint256, uint256) {
-        return (memberFeeMap[0], memberFeeMap[1], memberFeeMap[2]);
+    function getVIPFee()
+        external
+        view
+        returns (
+            uint256,
+            uint256,
+            uint256
+        )
+    {
+        return (memberFeeMap[MemberType.VIP1], memberFeeMap[MemberType.VIP7], memberFeeMap[MemberType.VIPX]);
     }
 
     function setMemberFees(
         uint256 fee1,
         uint256 fee7,
         uint256 feeX
-    ) public onlyOwner {
+    ) public payable onlyOwner {
         memberFeeMap[MemberType.VIP1] = fee1;
         memberFeeMap[MemberType.VIP7] = fee7;
         memberFeeMap[MemberType.VIPX] = feeX;
     }
 
-    function addMember(address user, uint256 memberType) public onlyOwner {
-        _addMember(user, memberType);
+    function updateReferralRate(uint256 _referralRate) external onlyOwner {
+        require(_referralRate <= 100, 'Invaild referral rate');
+        referralRate = _referralRate;
     }
 
-    function _addMember(address user, uint256 memberType) private {
+    function setDiscount(uint256 _discount) external payable onlyOwner {
+        discount = _discount;
+    }
+
+    function grantMember(address user, uint256 memberType) external payable onlyOwner {
+        _grantMember(user, memberType);
+    }
+
+    function _grantMember(address user, uint256 memberType) private {
         require(memberType < 3, 'Invalid member type');
 
         if (memberTimeMap[user] == 0) {
@@ -91,6 +114,9 @@ contract Membership is Ownable {
         }
 
         memberTypeMap[user] = MemberType(memberType);
+
+        emit Member(totalMember, user, uint8(memberType));
+
         totalMember += 1;
     }
 }

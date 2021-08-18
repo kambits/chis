@@ -58,8 +58,11 @@
     "test-integration": "mocha --file test/ERC20Token.spec.ts",
     "test-ethers": "mocha -g Ethers",
     "prepublishOnly": "yarn test",
+    "deploy": "hardhat run scripts/deploy.js --network",
     "deploy-bsctest": "hardhat run scripts/deploy.js --network bsctest",
-    "deploy-ropsten": "hardhat run scripts/deploy.js --network ropsten"
+    "deploy-ropsten": "hardhat run scripts/deploy.js --network ropsten",
+    "deploy-heco": "hardhat run scripts/deploy.js --network heco",
+    "verify-heco": "hardhat verify --network heco"
   },
   "license": "GPL-3.0-or-later"
 }

@@ -52,6 +52,11 @@ module.exports = {
             url: `https://eth-ropsten.alchemyapi.io/v2/SxR_h_dE4t13Tw_mieLOZz4PfJ2-xyll`,
             chainId: 3,
             accounts: [`0x${PRIVATE_KEY}`]
+        },
+        heco: {
+            url: 'https://http-mainnet-node.huobichain.com',
+            chainId: 128,
+            accounts: [`0x${PRIVATE_KEY}`]
         }
     },
     etherscan: {
