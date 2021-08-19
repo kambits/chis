@@ -1,8 +1,7 @@
 //SPDX-License-Identifier: MIT
-pragma solidity >=0.6.0;
+pragma solidity ^0.8.0;
 
 import '@openzeppelin/contracts/token/ERC20/ERC20.sol';
-import '@openzeppelin/contracts/token/ERC20/ERC20Burnable.sol';
 import '../utils/AdminRole.sol';
 
 /**
@@ -14,7 +13,7 @@ import '../utils/AdminRole.sol';
 contract ERC20Token is ERC20, AdminRole {
     uint256 private constant INITIAL_SUPPLY = 10**18 * (10**18);
 
-    constructor() public ERC20('Chis Finance', 'CHIS') {
+    constructor() ERC20('Chis Finance', 'CHIS') {
         _mint(msg.sender, INITIAL_SUPPLY);
     }
 }

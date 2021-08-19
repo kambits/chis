@@ -1,10 +1,11 @@
 //SPDX-License-Identifier: MIT
-pragma solidity >=0.6.0;
+pragma solidity ^0.8.0;
 
 import '@openzeppelin/contracts/access/Ownable.sol';
 import '../libraries/SafeMath.sol';
+import '../libraries/Initializable.sol';
 
-contract Membership is Ownable {
+contract Membership is Ownable , Initializable {
     using SafeMath for uint256;
     enum MemberType {
         VIP1,
@@ -24,9 +25,21 @@ contract Membership is Ownable {
 
     event Member(uint256 indexed index, address user, uint8 memberType);
 
-    constructor() public {
+    constructor() {
         setMemberFees(1 ether, 5 ether, 35 ether);
         _grantMember(msg.sender, uint256(MemberType.VIPX));
+    }
+    
+    function initialize(
+        address _owner,
+        uint256 _referralRate,
+        uint256 _discount,
+        uint256 _totalMember
+    ) public payable onlyOwner initializer{
+        transferOwnership(_owner);
+        referralRate = _referralRate;
+        discount = _discount;
+        totalMember = _totalMember;
     }
 
     function registerVIP(
@@ -56,11 +69,11 @@ contract Membership is Ownable {
     }
 
     function isMember(address user) external view returns (bool) {
-        return memberTimeMap[user] > now;
+        return memberTimeMap[user] > block.timestamp;
     }
 
     function getVIPInfo(address user) external view returns (uint256, uint256) {
-        return (memberTimeMap[user], now);
+        return (memberTimeMap[user], block.timestamp);
     }
 
     function getVIPFee()

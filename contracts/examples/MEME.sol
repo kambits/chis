@@ -1,5 +1,5 @@
 //SPDX-License-Identifier: MIT
-pragma solidity >=0.6.0;
+pragma solidity ^0.8.0;
 import '../libraries/SafeMath.sol';
 
 contract ERC20 {
@@ -218,10 +218,10 @@ contract ERC20Detailed {
      * these values are immutable: they can only be set once during
      * construction.
      */
-    constructor (string memory name, string memory symbol, uint8 decimals) public {
-        _name = name;
-        _symbol = symbol;
-        _decimals = decimals;
+    constructor (string memory __name, string memory __symbol, uint8 __decimals) {
+        _name = __name;
+        _symbol = __symbol;
+        _decimals = __decimals;
     }
 
     /**
@@ -268,7 +268,7 @@ contract MEME is ERC20, ERC20Detailed {
     /**
      * @dev Constructor that gives msg.sender all of existing tokens.
      */
-    constructor () public ERC20Detailed("MEME", "MEME", 6) {
+    constructor () ERC20Detailed("MEME", "MEME", 6) {
         _mint(msg.sender, 100000000 * (10 ** uint256(decimals())));
     }
 }

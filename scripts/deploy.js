@@ -1,14 +1,14 @@
 /* eslint no-use-before-define: "warn" */
 const fs = require('fs')
 const chalk = require('chalk')
-const { config, ethers } = require('hardhat')
+const { config, ethers, upgrades } = require('hardhat')
 const { utils } = require('ethers')
 const R = require('ramda')
 
 const main = async () => {
     console.log('\n\n 📡 Deploying...\n')
 
-    await deploy('Membership') 
+    await deploy('Membership', null, true)
 
     // const exampleToken = await deploy("ExampleToken")
     // const examplePriceOracle = await deploy("ExamplePriceOracle")
@@ -17,12 +17,20 @@ const main = async () => {
     console.log(' 💾  Artifacts (address, abi, and args) saved to: ', chalk.blue('packages/hardhat/artifacts/'), '\n\n')
 }
 
-const deploy = async (contractName, _args) => {
+const deploy = async (contractName, _args, upgradable) => {
     console.log(` 🛰  Deploying: ${contractName}`)
 
     const contractArgs = _args || []
     const contractArtifacts = await ethers.getContractFactory(contractName)
-    const deployed = await contractArtifacts.deploy(...contractArgs)
+
+    let deployed
+    if (upgradable) {
+        const upgradeableContract = await upgrades.deployProxy(contractArtifacts, contractArgs)
+        deployed = await upgradeableContract.deployed()
+    } else {
+        deployed = await contractArtifacts.deploy(...contractArgs)
+    }
+
     const encoded = abiEncodeArgs(deployed, contractArgs)
     fs.writeFileSync(`artifacts/${contractName}.address`, deployed.address)
 

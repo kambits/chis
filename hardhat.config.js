@@ -1,6 +1,7 @@
 require('@nomiclabs/hardhat-waffle')
 require('@nomiclabs/hardhat-ethers')
 require('@nomiclabs/hardhat-etherscan')
+require('@openzeppelin/hardhat-upgrades')
 require('dotenv').config()
 
 // https://hardhat.org/guides/create-task.html
@@ -21,7 +22,7 @@ const { PRIVATE_KEY, ETHERSCAN_API_KEY } = process.env
  */
 module.exports = {
     solidity: {
-        version: '0.6.6',
+        version: '0.8.7',
         settings: {
             optimizer: {
                 enabled: true,

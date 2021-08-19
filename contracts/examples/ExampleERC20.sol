@@ -1,5 +1,5 @@
 //SPDX-License-Identifier: MIT
-pragma solidity >=0.6.0;
+pragma solidity ^0.8.0;
 import '../interfaces/IERC20.sol';
 import '../libraries/SafeMath.sol';
 
@@ -21,7 +21,7 @@ contract ExampleERC20 {
     event Approval(address indexed owner, address indexed spender, uint256 value);
     event Transfer(address indexed from, address indexed to, uint256 value);
 
-    constructor(uint256 _totalSupply) public {
+    constructor(uint256 _totalSupply) {
         uint256 chainId;
         assembly {
             chainId := chainid()
@@ -84,7 +84,7 @@ contract ExampleERC20 {
         address to,
         uint256 value
     ) external returns (bool) {
-        if (allowance[from][msg.sender] != uint256(-1)) {
+        if (allowance[from][msg.sender] != (2**256 - 1)) {
             allowance[from][msg.sender] = allowance[from][msg.sender].sub(value);
         }
         _transfer(from, to, value);
