@@ -1,8 +1,8 @@
 import chai, { expect } from 'chai'
 import { BigNumber, Contract, constants } from 'ethers'
-const { solidity, MockProvider, deployContract } = require('ethereum-waffle')
-const { ether, toEther, parseUnits } = require('./shared/util')
-const { network, ethers, upgrades } = require('hardhat')
+import { solidity, MockProvider, deployContract } from 'ethereum-waffle'
+import { ether, toEther, parseUnits } from './shared/util'
+import { network, ethers, upgrades } from 'hardhat'
 // import 'hardhat'
 
 chai.use(solidity)
@@ -79,8 +79,8 @@ describe('Membership', () => {
 
         // after 1 hour
         // await time.increase(3600)
-        await ethers.provider.send('evm_increaseTime', [24 * 3600])
-        await ethers.provider.send('evm_mine')
+        // await ethers.provider.send('evm_increaseTime', [24 * 3600])
+        // await ethers.provider.send('evm_mine')
 
         await contract.connect(walletBob).registerVIP(walletBob.address, 0, walletAlice.address, {
             gasLimit: 9999999,

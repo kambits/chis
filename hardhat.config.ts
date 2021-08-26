@@ -1,22 +1,28 @@
-require('@nomiclabs/hardhat-waffle')
-require('@nomiclabs/hardhat-ethers')
-require('@nomiclabs/hardhat-etherscan')
-require('@openzeppelin/hardhat-upgrades')
-require('dotenv').config()
+import '@nomiclabs/hardhat-waffle'
+import '@nomiclabs/hardhat-ethers'
+import '@nomiclabs/hardhat-etherscan'
+import '@openzeppelin/hardhat-upgrades'
+// import 'hardhat-deploy'
+// import 'hardhat-gas-reporter'
+// import 'hardhat-docgen'
+// import '@typechain/hardhat'
+import dotenv from 'dotenv'
+dotenv.config()
 
 // https://hardhat.org/guides/create-task.html
-task('accounts', 'Prints the list of accounts', async () => {
-    const accounts = await ethers.getSigners()
+// task('accounts', 'Prints the list of accounts', async () => {
+//     const accounts = await ethers.getSigners()
 
-    for (const account of accounts) {
-        console.info(account.address)
-    }
-})
+//     for (const account of accounts) {
+//         console.info(account.address)
+//     }
+// })
 
 // Go to https://hardhat.org/config/ to learn more
 
 // console.info('env: ', process.env)
 const { PRIVATE_KEY, ETHERSCAN_API_KEY } = process.env
+const MNEMONIC = process.env.MNEMONIC || 'test test test test test test test test test test test junk'
 /**
  * @type import('hardhat/config').HardhatUserConfig
  */
@@ -30,8 +36,15 @@ module.exports = {
             }
         }
     },
-    defaultNetwork: 'localhost',
+    defaultNetwork: 'hardhat',
     networks: {
+        hardhat: {
+            accounts: {
+                MNEMONIC,
+                accountsBalance: '100000000000000000000000000'
+            },
+            blockGasLimit: 60000000
+        },
         localhost: {
             url: 'http://localhost:8545/',
             chainId: 31337,

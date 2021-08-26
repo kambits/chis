@@ -15,14 +15,14 @@
     "contracts"
   ],
   "dependencies": {
-    "@openzeppelin/contracts": "4.3.0",
-    "@openzeppelin/contracts-upgradeable": "^4.3.0",
     "dotenv": "^10.0.0"
   },
   "devDependencies": {
     "@nomiclabs/hardhat-ethers": "^2.0.2",
     "@nomiclabs/hardhat-etherscan": "^2.1.4",
     "@nomiclabs/hardhat-waffle": "^2.0.1",
+    "@openzeppelin/contracts": "4.3.0",
+    "@openzeppelin/contracts-upgradeable": "^4.3.0",
     "@openzeppelin/hardhat-upgrades": "^1.9.0",
     "@types/chai": "^4.2.6",
     "@types/mocha": "^5.2.7",
@@ -50,6 +50,7 @@
     "pretest": "yarn compile",
     "hardhat:node": "hardhat node --hostname 0.0.0.0",
     "hardhat:dev": "hardhat --network localhost",
+    "hardhat:test": "hardhat test --network hardhat",
     "hardhat:prod": "hardhat --network xdai",
     "hardhat:mainnet": "hardhat --network mainnet",
     "test": "mocha",
