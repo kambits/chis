@@ -5,17 +5,17 @@ import '@openzeppelin/contracts/security/ReentrancyGuard.sol';
 import '../interfaces/IUniswap.sol';
 import './GameERC20.sol';
 
-contract PlayToEarn is GameERC20, ReentrancyGuard {
-    mapping(address => bool) bots;
+contract PlayToEarnERC20 is GameERC20, ReentrancyGuard {
     uint256 public constant maxSupply = 1000 * 10**6 * 1 ether;
 
     IUniswapV2Router02 public uniswapV2Router;
     address public uniswapV2Pair;
 
-    bool public antiBotEnabled;
+    bool public antiBotEnabled = true;
     uint256 public antiBotDuration = 10 minutes;
-    uint256 public antiBotTime;
-    uint256 public antiBotAmount;
+    uint256 public antiBotTime = block.timestamp + antiBotDuration;
+    uint256 public antiBotAmount = 450000 * 1 ether;
+    mapping(address => bool) bots;
 
     constructor(string memory name, string memory symbol) GameERC20(name, symbol) {
         _mint(_msgSender(), maxSupply - amountFarm - amountPlayToEarn);
@@ -94,10 +94,15 @@ contract PlayToEarn is GameERC20, ReentrancyGuard {
 
     function antiBot(uint256 amount) external onlyOwner {
         require(amount > 0, 'not accept 0 value');
-        require(!antiBotEnabled);
 
         antiBotAmount = amount;
-        antiBotTime = block.timestamp + antiBotDuration;
         antiBotEnabled = true;
+        antiBotTime = block.timestamp + antiBotDuration;
+    }
+
+    function unfreezeBot() external onlyOwner {
+        antiBotAmount = 0;
+        antiBotEnabled = false;
+        antiBotTime = 0;
     }
 }
