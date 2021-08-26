@@ -1,12 +1,9 @@
 //SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
 
-import '@openzeppelin/contracts/access/Ownable.sol';
-import '../libraries/SafeMath.sol';
-import '../libraries/Initializable.sol';
+import '@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol';
 
-contract Membership is Ownable , Initializable {
-    using SafeMath for uint256;
+contract Membership is OwnableUpgradeable {
     enum MemberType {
         VIP1,
         VIP7,
@@ -19,27 +16,28 @@ contract Membership is Ownable , Initializable {
     /* member type => member fee */
     mapping(MemberType => uint256) public memberFeeMap;
 
-    uint256 public referralRate = 35; // 35%
-    uint256 public discount = 5 ether; // -5 ether
-    uint256 public totalMember = 0;
+    uint256 public referralRate; // 35%
+    uint256 public discount; // -5 ether
+    uint256 public totalMember;
 
     event Member(uint256 indexed index, address user, uint8 memberType);
 
-    constructor() {
-        setMemberFees(1 ether, 5 ether, 35 ether);
-        _grantMember(msg.sender, uint256(MemberType.VIPX));
-    }
-    
     function initialize(
-        address _owner,
         uint256 _referralRate,
         uint256 _discount,
         uint256 _totalMember
-    ) public payable onlyOwner initializer{
-        transferOwnership(_owner);
+    ) public payable initializer {
         referralRate = _referralRate;
         discount = _discount;
         totalMember = _totalMember;
+        __Context_init_unchained();
+        __Ownable_init_unchained();
+        __Membership_init_unchained();
+    }
+
+    function __Membership_init_unchained() internal initializer {
+        setMemberFees(1 ether, 5 ether, 35 ether);
+        _grantMember(msg.sender, uint256(MemberType.VIPX));
     }
 
     function registerVIP(
@@ -50,7 +48,7 @@ contract Membership is Ownable , Initializable {
         uint256 memberFee = memberFeeMap[MemberType(memberType)];
         if (MemberType(memberType) == MemberType.VIPX && memberTypeMap[referral] == MemberType.VIPX) {
             if (memberFee > discount) {
-                memberFee = memberFee.sub(discount);
+                memberFee -= discount;
             }
         }
 
@@ -60,9 +58,9 @@ contract Membership is Ownable , Initializable {
 
         uint256 fee = msg.value;
         if (referral != address(0x0) && referral != owner() && referral != user && memberTimeMap[referral] > 0) {
-            uint256 referralFee = memberFee.mul(referralRate) / 100;
+            uint256 referralFee = memberFee * referralRate / 100;
             payable(referral).transfer(referralFee);
-            fee = fee.sub(referralFee);
+            fee -= referralFee;
         }
 
         payable(owner()).transfer(fee);

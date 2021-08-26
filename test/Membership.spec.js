@@ -1,9 +1,9 @@
-import chai, { expect } from 'chai'
-import { BigNumber, Contract, constants } from 'ethers'
+const chai = require('chai')
+const expect = chai.expect
+const { BigNumber, Contract, constants } = require('ethers')
 const { solidity, MockProvider, deployContract } = require('ethereum-waffle')
 const { ether, toEther, parseUnits } = require('./shared/util')
 const { network, ethers, upgrades } = require('hardhat')
-// import 'hardhat'
 
 chai.use(solidity)
 
@@ -20,7 +20,7 @@ describe('Membership', () => {
     })
     const [walletDeployer, walletAlice, walletBob] = provider.getWallets()
 
-    let contract: Contract
+    let contract
 
     beforeEach(async () => {
         // contract = await deployContract(walletDeployer, Membership, [5, ether(1), 0], overrides)

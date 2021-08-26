@@ -30,7 +30,7 @@ module.exports = {
             }
         }
     },
-    defaultNetwork: 'bsctest',
+    defaultNetwork: 'localhost',
     networks: {
         localhost: {
             url: 'http://localhost:8545/',

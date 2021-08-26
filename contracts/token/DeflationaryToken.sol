@@ -3,7 +3,6 @@ pragma solidity ^0.8.0;
 
 import '@openzeppelin/contracts/token/ERC20/ERC20.sol';
 import '@openzeppelin/contracts/access/Ownable.sol';
-import '../libraries/SafeMath.sol';
 
 /**
  * @title DeflationaryToken
@@ -13,7 +12,6 @@ import '../libraries/SafeMath.sol';
 contract DeflationaryToken is ERC20, Ownable {
     address private constant BLACK_HOLE = address(0x0000000000000000000000000000000000dead);
 
-    using SafeMath for uint256;
     uint256 public finalSupply = 0;
     uint256 public burnRate = 500;
     address[] public swapAddressList;
@@ -54,9 +52,9 @@ contract DeflationaryToken is ERC20, Ownable {
         address recipient,
         uint256 amount
     ) internal override {
-        if (isSwapAddress(sender) && totalSupply() > balanceOf(BLACK_HOLE).add(finalSupply)) {
-            uint256 burnAmount = amount.mul(burnRate) / 10000;
-            ERC20._transfer(sender, recipient, amount.sub(burnAmount));
+        if (isSwapAddress(sender) && totalSupply() > balanceOf(BLACK_HOLE) + finalSupply) {
+            uint256 burnAmount = (amount * burnRate) / 10000;
+            ERC20._transfer(sender, recipient, amount - burnAmount);
             ERC20._transfer(sender, BLACK_HOLE, burnAmount);
         } else {
             ERC20._transfer(sender, recipient, amount);

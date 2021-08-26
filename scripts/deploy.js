@@ -8,7 +8,7 @@ const R = require('ramda')
 const main = async () => {
     console.log('\n\n 📡 Deploying...\n')
 
-    await deploy('Membership', null, true)
+    await deploy('Membership', [5, utils.parseEther('1'), 0], true)
 
     // const exampleToken = await deploy("ExampleToken")
     // const examplePriceOracle = await deploy("ExamplePriceOracle")

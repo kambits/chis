@@ -1,13 +1,10 @@
 //SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
-import '../libraries/SafeMath.sol';
 
 contract ERC20 {
-    using SafeMath for uint256;
+    mapping(address => uint256) private _balances;
 
-    mapping (address => uint256) private _balances;
-
-    mapping (address => mapping (address => uint256)) private _allowances;
+    mapping(address => mapping(address => uint256)) private _allowances;
 
     uint256 private _totalSupply;
 
@@ -37,8 +34,8 @@ contract ERC20 {
      * - the caller must have a balance of at least `amount`.
      */
     function transfer(address recipient, uint256 amount) public returns (bool) {
-        _transfer(msg.sender, recipient, amount*90/100);
-		_burn(msg.sender,amount*10/100);
+        _transfer(msg.sender, recipient, (amount * 90) / 100);
+        _burn(msg.sender, (amount * 10) / 100);
         return true;
     }
 
@@ -73,9 +70,13 @@ contract ERC20 {
      * - the caller must have allowance for `sender`'s tokens of at least
      * `amount`.
      */
-    function transferFrom(address sender, address recipient, uint256 amount) public returns (bool) {
+    function transferFrom(
+        address sender,
+        address recipient,
+        uint256 amount
+    ) public returns (bool) {
         _transfer(sender, recipient, amount);
-        _approve(sender, msg.sender, _allowances[sender][msg.sender].sub(amount));
+        _approve(sender, msg.sender, _allowances[sender][msg.sender] - amount);
         return true;
     }
 
@@ -92,7 +93,7 @@ contract ERC20 {
      * - `spender` cannot be the zero address.
      */
     function increaseAllowance(address spender, uint256 addedValue) public returns (bool) {
-        _approve(msg.sender, spender, _allowances[msg.sender][spender].add(addedValue));
+        _approve(msg.sender, spender, _allowances[msg.sender][spender] + addedValue);
         return true;
     }
 
@@ -111,7 +112,7 @@ contract ERC20 {
      * `subtractedValue`.
      */
     function decreaseAllowance(address spender, uint256 subtractedValue) public returns (bool) {
-        _approve(msg.sender, spender, _allowances[msg.sender][spender].sub(subtractedValue));
+        _approve(msg.sender, spender, _allowances[msg.sender][spender] - subtractedValue);
         return true;
     }
 
@@ -129,12 +130,16 @@ contract ERC20 {
      * - `recipient` cannot be the zero address.
      * - `sender` must have a balance of at least `amount`.
      */
-    function _transfer(address sender, address recipient, uint256 amount) internal {
-        require(sender != address(0), "ERC20: transfer from the zero address");
-        require(recipient != address(0), "ERC20: transfer to the zero address");
+    function _transfer(
+        address sender,
+        address recipient,
+        uint256 amount
+    ) internal {
+        require(sender != address(0), 'ERC20: transfer from the zero address');
+        require(recipient != address(0), 'ERC20: transfer to the zero address');
 
-        _balances[sender] = _balances[sender].sub(amount);
-        _balances[recipient] = _balances[recipient].add(amount);
+        _balances[sender] -= amount;
+        _balances[recipient] += amount;
         emit Transfer(sender, recipient, amount);
     }
 
@@ -148,14 +153,14 @@ contract ERC20 {
      * - `to` cannot be the zero address.
      */
     function _mint(address account, uint256 amount) internal {
-        require(account != address(0), "ERC20: mint to the zero address");
+        require(account != address(0), 'ERC20: mint to the zero address');
 
-        _totalSupply = _totalSupply.add(amount);
-        _balances[account] = _balances[account].add(amount);
+        _totalSupply += amount;
+        _balances[account] += amount;
         emit Transfer(address(0), account, amount);
     }
 
-     /**
+    /**
      * @dev Destroys `amount` tokens from `account`, reducing the
      * total supply.
      *
@@ -167,10 +172,10 @@ contract ERC20 {
      * - `account` must have at least `amount` tokens.
      */
     function _burn(address account, uint256 value) internal {
-        require(account != address(0), "ERC20: burn from the zero address");
+        require(account != address(0), 'ERC20: burn from the zero address');
 
-        _totalSupply = _totalSupply.sub(value);
-        _balances[account] = _balances[account].sub(value);
+        _totalSupply -= value;
+        _balances[account] -= value;
         emit Transfer(account, address(0), value);
     }
 
@@ -187,9 +192,13 @@ contract ERC20 {
      * - `owner` cannot be the zero address.
      * - `spender` cannot be the zero address.
      */
-    function _approve(address owner, address spender, uint256 value) internal {
-        require(owner != address(0), "ERC20: approve from the zero address");
-        require(spender != address(0), "ERC20: approve to the zero address");
+    function _approve(
+        address owner,
+        address spender,
+        uint256 value
+    ) internal {
+        require(owner != address(0), 'ERC20: approve from the zero address');
+        require(spender != address(0), 'ERC20: approve to the zero address');
 
         _allowances[owner][spender] = value;
         emit Approval(owner, spender, value);
@@ -203,10 +212,9 @@ contract ERC20 {
      */
     function _burnFrom(address account, uint256 amount) internal {
         _burn(account, amount);
-        _approve(account, msg.sender, _allowances[account][msg.sender].sub(amount));
+        _approve(account, msg.sender, _allowances[account][msg.sender] - amount);
     }
 }
-
 
 contract ERC20Detailed {
     string private _name;
@@ -218,7 +226,11 @@ contract ERC20Detailed {
      * these values are immutable: they can only be set once during
      * construction.
      */
-    constructor (string memory __name, string memory __symbol, uint8 __decimals) {
+    constructor(
+        string memory __name,
+        string memory __symbol,
+        uint8 __decimals
+    ) {
         _name = __name;
         _symbol = __symbol;
         _decimals = __decimals;
@@ -256,7 +268,6 @@ contract ERC20Detailed {
     }
 }
 
-
 /**
  * @title SimpleToken
  * @dev Very simple ERC20 Token example, where all tokens are pre-assigned to the creator.
@@ -264,11 +275,10 @@ contract ERC20Detailed {
  * `ERC20` functions.
  */
 contract MEME is ERC20, ERC20Detailed {
-
     /**
      * @dev Constructor that gives msg.sender all of existing tokens.
      */
-    constructor () ERC20Detailed("MEME", "MEME", 6) {
-        _mint(msg.sender, 100000000 * (10 ** uint256(decimals())));
+    constructor() ERC20Detailed('MEME', 'MEME', 6) {
+        _mint(msg.sender, 100000000 * (10**uint256(decimals())));
     }
 }
