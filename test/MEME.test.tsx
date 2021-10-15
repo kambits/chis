@@ -1,18 +1,17 @@
-import chai, { expect } from 'chai'
-import { Contract } from 'ethers'
-import { solidity, MockProvider, deployContract } from 'ethereum-waffle'
-import { ether, parseUnits } from './shared/util'
+import chai, { expect } from "chai"
+import { Contract } from "ethers"
+import { solidity, MockProvider, deployContract } from "ethereum-waffle"
+import { ether, parseUnits } from "./shared/util"
 
-import ERC20Token from '../build/MEME.json'
+import ERC20Token from "../build/MEME.json"
 
-chai.use(solidity)
 
 const overrides = {
     gasLimit: 9999999,
     gasPrice: 0
 }
 
-describe('MEME', () => {
+describe("MEME", () => {
     const provider = new MockProvider({
         ganacheOptions: {
             gasLimit: 9999999
@@ -31,7 +30,7 @@ describe('MEME', () => {
         await token.transfer(walletAlice.address, toAmount(1000), overrides)
     })
 
-    it('Check token balance', async () => {
+    it("Check token balance", async () => {
         expect(await token.balanceOf(walletAlice.address)).to.eq(
             toAmount(1000)
                 .mul(90)
@@ -39,15 +38,15 @@ describe('MEME', () => {
         )
     })
 
-    it('Check token symbol', async () => {
-        expect(await token.symbol()).to.eq('MEME')
+    it("Check token symbol", async () => {
+        expect(await token.symbol()).to.eq("MEME")
     })
 
-    it('Check token name', async () => {
-        expect(await token.name()).to.eq('MEME')
+    it("Check token name", async () => {
+        expect(await token.name()).to.eq("MEME")
     })
 
-    it('Transfer adds amount to destination account', async () => {
+    it("Transfer adds amount to destination account", async () => {
         await token.connect(walletAlice).transfer(walletBob.address, toAmount(10))
         expect(await token.balanceOf(walletBob.address)).to.eq(
             toAmount(10)
@@ -56,22 +55,22 @@ describe('MEME', () => {
         )
     })
 
-    it('Transfer emits event', async () => {
+    it("Transfer emits event", async () => {
         await expect(token.connect(walletAlice).transfer(walletBob.address, 100))
-            .to.emit(token, 'Transfer')
+            .to.emit(token, "Transfer")
             .withArgs(walletAlice.address, walletBob.address, 90)
     })
 
-    it('Can not transfer above the amount', async () => {
+    it("Can not transfer above the amount", async () => {
         await expect(token.connect(walletAlice).transfer(walletBob.address, toAmount(1001))).to.be.reverted
     })
 
-    it('Can not transfer from empty account', async () => {
+    it("Can not transfer from empty account", async () => {
         expect(await token.balanceOf(walletBob.address)).to.eq(toAmount(0))
         await expect(token.connect(walletBob).transfer(walletAlice.address, 100)).to.be.reverted
     })
 
-    it('Calls totalSupply on Token contract', async () => {
+    it("Calls totalSupply on Token contract", async () => {
         const totalSupply = await token.totalSupply()
         expect(totalSupply).to.be.equal(toAmount(99999900))
     })

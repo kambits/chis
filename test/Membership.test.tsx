@@ -3,14 +3,6 @@ import { BigNumber, Contract, constants } from 'ethers'
 import { solidity, MockProvider, deployContract } from 'ethereum-waffle'
 import { ether, toEther, parseUnits } from './shared/util'
 import { network, ethers, upgrades } from 'hardhat'
-// import 'hardhat'
-
-chai.use(solidity)
-
-const overrides = {
-    gasLimit: 9999999,
-    gasPrice: 0
-}
 
 describe('Membership', () => {
     const provider = new MockProvider({
@@ -23,7 +15,6 @@ describe('Membership', () => {
     let contract: Contract
 
     beforeEach(async () => {
-        // contract = await deployContract(walletDeployer, Membership, [5, ether(1), 0], overrides)
         const Membership = await ethers.getContractFactory('Membership')
         const membership = await upgrades.deployProxy(Membership, [5, ether(1), 0])
         contract = await membership.deployed()
