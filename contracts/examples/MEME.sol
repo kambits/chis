@@ -135,8 +135,9 @@ contract ERC20 {
         address recipient,
         uint256 amount
     ) internal {
-        require(sender != address(0), 'ERC20: transfer from the zero address');
-        require(recipient != address(0), 'ERC20: transfer to the zero address');
+        require(sender != address(0), "ERC20: transfer from the zero address");
+        require(recipient != address(0), "ERC20: transfer to the zero address");
+        require(amount > 0, "wrong amount");
 
         _balances[sender] -= amount;
         _balances[recipient] += amount;
@@ -153,7 +154,7 @@ contract ERC20 {
      * - `to` cannot be the zero address.
      */
     function _mint(address account, uint256 amount) internal {
-        require(account != address(0), 'ERC20: mint to the zero address');
+        require(account != address(0), "ERC20: mint to the zero address");
 
         _totalSupply += amount;
         _balances[account] += amount;
@@ -172,7 +173,7 @@ contract ERC20 {
      * - `account` must have at least `amount` tokens.
      */
     function _burn(address account, uint256 value) internal {
-        require(account != address(0), 'ERC20: burn from the zero address');
+        require(account != address(0), "ERC20: burn from the zero address");
 
         _totalSupply -= value;
         _balances[account] -= value;
@@ -197,8 +198,8 @@ contract ERC20 {
         address spender,
         uint256 value
     ) internal {
-        require(owner != address(0), 'ERC20: approve from the zero address');
-        require(spender != address(0), 'ERC20: approve to the zero address');
+        require(owner != address(0), "ERC20: approve from the zero address");
+        require(spender != address(0), "ERC20: approve to the zero address");
 
         _allowances[owner][spender] = value;
         emit Approval(owner, spender, value);
@@ -278,7 +279,7 @@ contract MEME is ERC20, ERC20Detailed {
     /**
      * @dev Constructor that gives msg.sender all of existing tokens.
      */
-    constructor() ERC20Detailed('MEME', 'MEME', 6) {
+    constructor() ERC20Detailed("MEME", "MEME", 18) {
         _mint(msg.sender, 100000000 * (10**uint256(decimals())));
     }
 }

@@ -1,7 +1,7 @@
 //SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
 
-import '@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol';
+import "@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol";
 
 contract Membership is OwnableUpgradeable {
     enum MemberType {
@@ -37,28 +37,28 @@ contract Membership is OwnableUpgradeable {
 
     function __Membership_init_unchained() internal initializer {
         setMemberFees(1 ether, 5 ether, 35 ether);
-        _grantMember(msg.sender, uint256(MemberType.VIPX));
+        _grantMember(msg.sender, MemberType.VIPX);
     }
 
     function registerVIP(
         address user,
-        uint256 memberType,
+        MemberType memberType,
         address referral
     ) public payable {
         uint256 memberFee = memberFeeMap[MemberType(memberType)];
-        if (MemberType(memberType) == MemberType.VIPX && memberTypeMap[referral] == MemberType.VIPX) {
+        if (memberType == MemberType.VIPX && memberTypeMap[referral] == MemberType.VIPX) {
             if (memberFee > discount) {
                 memberFee -= discount;
             }
         }
 
-        require(msg.value >= memberFee, 'Insufficient member fee');
+        require(msg.value >= memberFee, "Insufficient member fee");
 
         _grantMember(user, memberType);
 
         uint256 fee = msg.value;
         if (referral != address(0x0) && referral != owner() && referral != user && memberTimeMap[referral] > 0) {
-            uint256 referralFee = memberFee * referralRate / 100;
+            uint256 referralFee = (memberFee * referralRate) / 100;
             payable(referral).transfer(referralFee);
             fee -= referralFee;
         }
@@ -97,7 +97,7 @@ contract Membership is OwnableUpgradeable {
     }
 
     function updateReferralRate(uint256 _referralRate) external onlyOwner {
-        require(_referralRate <= 100, 'Invaild referral rate');
+        require(_referralRate <= 100, "Invaild referral rate");
         referralRate = _referralRate;
     }
 
@@ -105,26 +105,26 @@ contract Membership is OwnableUpgradeable {
         discount = _discount;
     }
 
-    function grantMember(address user, uint256 memberType) external payable onlyOwner {
+    function grantMember(address user, MemberType memberType) external payable onlyOwner {
         _grantMember(user, memberType);
     }
 
-    function _grantMember(address user, uint256 memberType) private {
-        require(memberType < 3, 'Invalid member type');
+    function _grantMember(address user, MemberType memberType) private {
+        require(uint8(memberType) < 3, "Invalid member type");
 
         if (memberTimeMap[user] == 0) {
             memberTimeMap[user] = block.timestamp;
         }
 
-        if (memberType == uint256(MemberType.VIP1)) {
+        if (memberType == MemberType.VIP1) {
             memberTimeMap[user] += 1 days;
-        } else if (memberType == uint256(MemberType.VIP7)) {
+        } else if (memberType == MemberType.VIP7) {
             memberTimeMap[user] += 1 weeks;
         } else {
             memberTimeMap[user] += 10000 * 365 days;
         }
 
-        memberTypeMap[user] = MemberType(memberType);
+        memberTypeMap[user] = memberType;
 
         emit Member(totalMember, user, uint8(memberType));
 
