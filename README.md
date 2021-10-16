@@ -1,5 +1,6 @@
+[![CI](https://github.com/chis-finance/chis/actions/workflows/CI.yml/badge.svg)](https://github.com/chis-finance/chis/actions/workflows/CI.yml)
+
 # Smart Contracts
-- ERC20:     Token
 - Solidity:  ^0.8.0
 - Tool:      hardhat-waffle ethereum-waffle
 - UnitTest:  TypeScript + mocha + chai
