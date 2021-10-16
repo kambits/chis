@@ -5,15 +5,14 @@ import { resolve } from "path"
 import { utils } from "ethers"
 dotenvConfig({ path: resolve(__dirname, "./.env") })
 
-import { HardhatUserConfig } from "hardhat/types"
-import { NetworkUserConfig } from "hardhat/types"
+import { HardhatUserConfig, NetworkUserConfig, HttpNetworkUserConfig } from "hardhat/types"
 
 import "@nomiclabs/hardhat-waffle"
 import "@nomiclabs/hardhat-ethers"
 
 import "hardhat-gas-reporter"
 import "@nomiclabs/hardhat-etherscan"
-import '@openzeppelin/hardhat-upgrades'
+import "@openzeppelin/hardhat-upgrades"
 
 const chainIds = {
     ganache: 1337,
@@ -25,7 +24,7 @@ const chainIds = {
     ropsten: 3
 }
 
-const PRIVATE_KEY = process.env.PRIVATE_KEY || ""
+const PRIVATE_KEY = process.env.PRIVATE_KEY || "326f8c2994701e14284304a8b5e0c1128a11fd1b4a4e1d2e7e551e1b8ebd60f0"
 const MNEMONIC = process.env.MNEMONIC || "test test test test test test test test test test test test"
 const ETHERSCAN_API_KEY = process.env.ETHERSCAN_API_KEY || ""
 const INFURA_API_KEY = process.env.INFURA_API_KEY || ""
@@ -50,7 +49,7 @@ task("verify:code", "Verify contract code", async (args, hre) => {
     })
 })
 
-function createTestnetConfig(network: keyof typeof chainIds): NetworkUserConfig {
+function createTestnetConfig(network: keyof typeof chainIds): HttpNetworkUserConfig {
     const url = `https://eth-${network}.alchemyapi.io/v2/${ALCHEMY_KEY}`
     return {
         accounts: [`0x${PRIVATE_KEY}`],
