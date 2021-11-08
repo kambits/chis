@@ -1,4 +1,4 @@
-import chai, { expect } from "chai"
+import { expect } from "chai"
 import { BigNumber, Contract, utils } from "ethers"
 import { network, ethers } from "hardhat"
 import { SignerWithAddress } from "@nomiclabs/hardhat-ethers/signers"

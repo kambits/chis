@@ -1,4 +1,4 @@
-import chai, { expect } from "chai"
+import { expect } from "chai"
 import { beforeEach } from "mocha"
 import { Contract, constants } from "ethers"
 import { ether, mineTime, toEther } from "./shared/util"

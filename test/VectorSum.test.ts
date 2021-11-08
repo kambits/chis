@@ -1,4 +1,4 @@
-import chai, { expect } from "chai"
+import { expect } from "chai"
 import { Contract, BigNumber, utils } from "ethers"
 import { network, ethers } from "hardhat"
 

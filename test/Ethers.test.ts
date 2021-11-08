@@ -1,4 +1,4 @@
-import chai, { expect } from "chai"
+import { expect } from "chai"
 import { BigNumber, utils } from "ethers"
 
 describe("Ethers", () => {

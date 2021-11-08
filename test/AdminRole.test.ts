@@ -1,4 +1,4 @@
-import chai, { expect } from "chai"
+import { expect } from "chai"
 import { BigNumber, Contract, Signer } from "ethers"
 import { ether, toEther } from "./shared/util"
 import { network, ethers } from "hardhat"
