@@ -7,7 +7,7 @@ contract TestBreedAdmin {
         address _userAddres,
         bytes32 _msghash,
         bytes memory _signature
-    ) external returns (uint256) {
+    ) external view returns (uint256) {
         /*,
         uint8 v ,
         bytes32 r,
